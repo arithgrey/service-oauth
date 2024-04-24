@@ -1,0 +1,45 @@
+version: '3'
+
+services:
+  microservice_enid:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${SERVICENAME}_service
+    container_name: ${SERVICENAME}_service
+    ports:
+      - "8083:8080"
+    env_file:
+      - .env
+    environment:
+      - ENVIRONMENT=${ENVIRONMENT}
+    depends_on:
+      - postgres
+    volumes:
+      - .:/app
+    networks:
+      - backend
+
+  postgres:
+    container_name: ${SERVICENAME}_postgres
+    image: postgres:alpine
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    env_file:
+      - .env
+   
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      retries: 5
+
+volumes:
+  postgres_data:
+
+networks:
+  backend:
+    driver: bridge
