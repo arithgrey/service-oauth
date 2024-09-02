@@ -19,6 +19,7 @@ services:
       - .:/app
     networks:
       - backend
+      - enid_service_network
 
   postgres:
     container_name: ${SERVICENAME}_postgres
@@ -43,3 +44,5 @@ volumes:
 networks:
   backend:
     driver: bridge
+  enid_service_network:
+    external: true
