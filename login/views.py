@@ -235,7 +235,8 @@ class GoogleLoginViewSet(viewsets.ViewSet):
                 'id': user.id,
                 'email': user.email,
                 'name': user.first_name,
-                'profile': profile
+                'profile': profile,
+                'picture': picture  # Agregar imagen de perfil de Google
             }
             
             logger.info(f"Login exitoso con Google OAuth: {email}")
