@@ -58,3 +58,52 @@ class UserSingInValidatorSerializer(serializers.Serializer):
         min_lengths = {}
         min_values = {}
         max_values = {}        
+
+
+class GoogleOAuthSerializer(serializers.Serializer):
+    """
+    Serializer para validar datos de autenticación con Google OAuth
+    """
+    email = serializers.EmailField(
+        required=True,
+        error_messages={
+            'required': 'El campo email es obligatorio.',
+            'invalid': 'El email no tiene un formato válido.'
+        }
+    )
+    
+    name = serializers.CharField(
+        required=True,
+        max_length=255,
+        error_messages={
+            'required': 'El nombre es obligatorio.',
+            'blank': 'El nombre no puede estar vacío.'
+        }
+    )
+    
+    google_id = serializers.CharField(
+        required=True,
+        max_length=255,
+        error_messages={
+            'required': 'El ID de Google es obligatorio.',
+            'blank': 'El ID de Google no puede estar vacío.'
+        }
+    )
+    
+    credential = serializers.CharField(
+        required=True,
+        error_messages={
+            'required': 'El credential de Google es obligatorio.',
+            'blank': 'El credential no puede estar vacío.'
+        }
+    )
+    
+    picture = serializers.URLField(
+        required=False,
+        allow_blank=True
+    )
+    
+    email_verified = serializers.BooleanField(
+        required=False,
+        default=True
+    )
