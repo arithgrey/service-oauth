@@ -53,7 +53,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'share_test',
     'user',
-    'login'
+    'login',
+    'rbac',
 ]
 
 SWAGGER_SETTINGS = {
