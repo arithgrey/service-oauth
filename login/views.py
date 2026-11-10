@@ -12,9 +12,18 @@ from rest_framework.permissions import IsAuthenticated
 from django.conf import settings
 from google.oauth2 import id_token
 from google.auth.transport import requests
+from store.models import PagePermission
 import logging
 
 logger = logging.getLogger(__name__)
+
+
+def get_user_permissions(user):
+    return list(
+        PagePermission.objects
+        .filter(group__in=user.groups.all())
+        .values_list('page_slug', flat=True)
+    )
 
 
 class LoginViewSet(viewsets.ViewSet):
@@ -77,11 +86,14 @@ class LoginSiginViewSet(viewsets.ViewSet):
                'name': user.first_name,
                'email':user.email,               
             }
+            permissions = get_user_permissions(user)
             return Response(
-                {   'user':user_data,
-                    'token': str(access_token), 
+                {   'user': user_data,
+                    'token': str(access_token),
                     'refresh_token': str(refresh_token),
-                    'profile':profile}, status=status.HTTP_200_OK)
+                    'profile': profile,
+                    'permissions': permissions,
+                }, status=status.HTTP_200_OK)
         else:
             return Response({'error': 'Credenciales inválidas'}, status=status.HTTP_401_UNAUTHORIZED)
 
@@ -240,12 +252,14 @@ class GoogleLoginViewSet(viewsets.ViewSet):
             }
             
             logger.info(f"Login exitoso con Google OAuth: {email}")
-            
+            permissions = get_user_permissions(user)
+
             # 10. Retornar respuesta
             return Response({
                 'token': str(access_token),
                 'refresh_token': str(refresh_token),
-                'user': user_data
+                'user': user_data,
+                'permissions': permissions,
             }, status=status.HTTP_200_OK if not created else status.HTTP_201_CREATED)
             
         except Exception as e:
