@@ -71,8 +71,14 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
-        
+
     ],
+}
+
+# Llave de firma JWT compartida entre microservicios (oauth emite, otros validan).
+# Se lee de config; si no existe, cae en SECRET_KEY (comportamiento previo).
+SIMPLE_JWT = {
+    'SIGNING_KEY': config('JWT_SIGNING_KEY', default=SECRET_KEY),
 }
 
  
