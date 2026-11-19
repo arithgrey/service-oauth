@@ -8,11 +8,13 @@ services:
     image: ${SERVICENAME}_service
     container_name: ${SERVICENAME}_service
     ports:
-      - "8083:8080"
+      - "127.0.0.1:8083:8080"
     env_file:
       - .env
     environment:
       - ENVIRONMENT=${ENVIRONMENT}
+      # Único interruptor dev/prod (ver app/settings.py). Default dev local.
+      - APP_ENV=${APP_ENV:-dev}
     depends_on:
       - postgres
     volumes:
@@ -25,7 +27,7 @@ services:
     container_name: ${SERVICENAME}_postgres
     image: postgres:alpine
     ports:
-      - "5435:5432"
+      - "127.0.0.1:5435:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     env_file:
